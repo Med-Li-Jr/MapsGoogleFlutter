@@ -1,7 +1,9 @@
 import 'dart:collection';
 
+import 'package:comeon_flutter/ApiModel.dart';
 import 'package:comeon_flutter/DirectionsRepository.dart';
 import 'package:comeon_flutter/directionModel.dart';
+import 'package:comeon_flutter/HttpApiCall.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -198,10 +200,35 @@ class _GMapState extends State<GMap> {
         tooltip: 'Increment',
         child: Icon(Icons.map),
         onPressed: () {
-          
+          getDataFromApi();  
         },
       ),
     );
+  }
+  void getDataFromApi() async{
+    
+  int numberOfSecond = 0;
+    while (true) {
+      await Future.delayed(Duration(milliseconds: 3000));
+      try{
+        await HttpApiCall().getApiData().then((res) async {          
+          numberOfSecond++;
+          print(res);
+          ApiModel modelsApi = (ApiModel.fromJson(res)); 
+          print(" long : " + modelsApi.longitude.toString() + " // lat : " + modelsApi.latitude.toString());
+          print(modelsApi);
+          _destination = null;
+          _addMarker(LatLng(double.parse(modelsApi.latitude), double.parse(modelsApi.longitude)));
+          //return res;
+        });
+      }
+      catch (e){
+        print(e);
+      }
+      if( numberOfSecond > 7)
+        break;
+
+    }
   }
   void _addMarker(LatLng pos) async {
     if(_destination != null){
