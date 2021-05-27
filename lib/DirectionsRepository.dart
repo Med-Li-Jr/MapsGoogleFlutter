@@ -49,6 +49,8 @@ class DirectionsRepository {
     final response = await http.get(Uri.https(_baseUrlMapBox, _charactersPathMapBox + parameters, _queryParametersMapBox));
 
     // Check if response is successful
+    
+
     if (response.statusCode == 200) {
       return Directions.fromMapBox(json.decode(response.body));
     }
